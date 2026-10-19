@@ -1,10 +1,10 @@
 PKG_NAME="systemd"
 PKG_PRETTY="systemd"
 PKG_DESC="Core Init System"
-PKG_VER="262"
+PKG_VER="v262.1"
 PKG_URL="https://github.com/systemd/systemd.git"
 
-FLAG_SYSPACAKGE=1
+FLAG_SYSPACKAGE=1
 
 # Functions
 
@@ -12,7 +12,8 @@ update() {
     latest_tag=$(git ls-remote --tags --refs "$PKG_URL" | awk -F/ '{print $NF}' | sort -V | tail -n1)
     if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
        FLAG_OOD=1
-    fi
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+fi
 }
 
 build() {
