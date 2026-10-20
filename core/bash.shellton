@@ -1,0 +1,38 @@
+PKG_NAME="bash"
+PKG_PRETTY="Bash"
+PKG_DESC="GNU Bourne Again SHell"
+PKG_VER="5.3"
+PKG_URL="https://ftp.gnu.org/gnu/bash/bash-${PKG_VER}.tar.gz"
+
+BUILD_DEPENDS="readline libreadline.so glibc ncurses bash-completion"
+
+FLAG_PREPACKAGED=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+
+# Functions
+
+update() {
+    latest_tag=$(curl -s "https://ftp.gnu.org/gnu/bash/" | grep -oP 'bash-[0-9]+\.[0-9]+(\.[0-9]+)?\.tar\.gz' | sed -s/bash-//;s/\.tar\.gz//' | sort -V | tail -n 1)
+    echo "Latest tagged release: $latest_tag"
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+
+    _build_flags=(
+	--prefix=/usr
+	--without-bash-malloc
+	--docdir=/usr/share/doc/$PKG_NAME
+    )
+
+    make -j$(nproc)
+
+    make install DESTDIR="$PKG_DEST_DIR"
+
+    # Symlink bash to sh
+    ln -sf bash "${PKG_DEST_DIR}/usr/bin/sh"
+}
