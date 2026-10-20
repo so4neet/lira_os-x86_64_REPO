@@ -1,0 +1,41 @@
+PKG_NAME="linux"
+PKG_PRETTY="Linux"
+PKG_DESC="Linux Kernel"
+PKG_VER="7.2.11"
+KERNEL_SUBSTRING="${PKG_VER%%.*}.x"
+PKG_URL="https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/linux-{PKG_VER}.xz"
+
+BUILD_DEPENDS="bc binutils cpio gettext glibc libelf libgcc openssl pahole perl python rust rust-bindgen rust-src tar xxhash xz zlib zstd"
+
+FLAG_PREPACKAGED=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+
+# Functions
+
+update() {
+    latest_tag=$(curl -s "https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/" | grep -oP 'linux-[0-9+\.[0-9]+(\.[0-9]+)?\.tar\.xz' | sed 's/linux-//;s/\.tar\.xz//' | sort -V | tail -n 1)
+    echo "Latest tagged release: $latest_tag"
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+
+    make x86_64_defconfig
+
+    make -j$(nproc) bzImage
+    make -j$(nproc) modules
+
+    mkdir -p "${PKG_DEST_DIR}/boot"
+    mkdir -p "${PKG_DEST_DIR}/lib/modules"
+
+    local KERNEL_REL
+    KERNEL_REL="$(make kernelrelease)"
+
+    cp arch/x86/boot/bzImage "${PKG_DEST_DIR}/boot/vmlinuz-$KERNEL_REL"
+    cp System.map "${PKG_DEST_DIR}/boot/System.map-$KERNEL_REL"
+    cp .config "${PKG_DEST_DIR}/boot/config-$KERNEL_REL"
+}
