@@ -1,0 +1,35 @@
+PKG_NAME="coreutils"
+PKG_PRETTY="Coreutils"
+PKG_DESC="Basic file, shell and text manipulation utilities of the GNU operating system"
+PKG_VER="9.12"
+PKG_URL="https://ftp.gnu.org/gnu/coreutils/coreutils-${PKG_VER}.tar.gz"
+
+BUILD_DEPENDS="acl attr glibc gmp libcap openssl git gperf python wget"
+
+FLAG_PREPACKAGED=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+
+# Functions
+
+update() {
+    latest_tag=$(curl -s "https://ftp.gnu.org/gnu/coreutils/" | grep -oP 'coreutils-[0-9]+\.[0-9]+(\.[0-9]+)?\.tar\.gz' | sed 's/coreutils-//;s/\.tar\.gz//' | sort -V | tail -n 1)
+    echo "Latest tagged release: $latest_tag"
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+
+    _build_flags=(
+	--prefix=/usr
+	--libexecdir=/usr/lib
+	--with-openssl
+    )
+
+    make -j$(nproc)
+
+    make install DESTDIR="$PKG_DEST_DIR"
+}
