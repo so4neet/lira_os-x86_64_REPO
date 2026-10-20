@@ -13,7 +13,7 @@ FLAG_SYSPACKAGE_INSTALL_ROOT=1
 # Functions
 
 update() {
-    latest_tag=$(curl -s "https://ftp.gnu.org/gnu/bash/" | grep -oP 'bash-[0-9]+\.[0-9]+(\.[0-9]+)?\.tar\.gz' | sed -s/bash-//;s/\.tar\.gz//' | sort -V | tail -n 1)
+    latest_tag=$(curl -s "https://ftp.gnu.org/gnu/bash/" | grep -oP 'bash-[0-9]+\.[0-9]+(\.[0-9]+)?\.tar\.gz' | sed 's/bash-//;s/\.tar\.gz//' | sort -V | tail -n 1)
     echo "Latest tagged release: $latest_tag"
     if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
        FLAG_OOD=1
