@@ -1,3 +1,8 @@
+# A TON of this is pulled directly from Arch Linux's PKGBUILD. The goal is not to steal,
+# but to use a known default (Arch) that works, and slowly tweak it to my own.
+
+# It's not 1:1, but it should be known :) 
+
 PKG_NAME="systemd"
 PKG_PRETTY="systemd"
 PKG_DESC="Core Init System"
@@ -17,6 +22,51 @@ fi
 }
 
 build() {
-    meson setup build --prefix=/usr --buildtype=release -Dwerror=false -Dmode=release
-    ninja -C build -j"$(nproc)"
+
+    local _timeservers=(time.cloudflare.com)
+    local _nameservers=(
+      '9.9.9.9#dns.quad9.net'
+      '2620:fe::9#dns.quad9.net'
+      '1.1.1.1#cloudflare-dns.com'
+      '2606:4700:4700::1111#cloudflare-dns.com'
+      '8.8.8.8#dns.google'
+      '2001:4860:4860::8888#dns.google'
+    )
+      
+
+    local _meson_options=(
+        -Dversion-tag="${PKG_VER}-LiraOS"
+        -Dvcs-tag=false
+	-Dshared-lib-tag="${PKG_VER}"
+        -Dmode=release
+	-Dapparmor=enabled
+	-Dbootloader=enabled
+	-Dxenctrl=disabled
+	-Dbpf-framework=enabled
+	-Dima=false
+	-Dlibidn2=enabled
+	-Dlz4=enabled
+	-Dselinux=disabled
+	-Dsshdprivsepdir=/usr/share/empty.sshd
+	-Dsysupdated=enabled
+	-Dcompat-sysv-interfaces=false
+	-Ddbuspolicydir=/usr/share/dbus-1/system.d
+	-Ddefault-dnssec=no
+	-Ddefault-kill-user-processes=false
+	-Dlocalegen-path=/usr/bin/localegen
+	-Ddns-over-tls=openssl
+	-Dfallback-hostname='lira-os'
+	-Dntp-servers="${_timeservers[*]}"
+	-Ddns-servers="${_nameservers[*]}"
+	-Drpmmacrosdir=no
+	-Dsbat-distro='lira-os'
+	-Dsbat-distro-summary='Lira OS'
+	-Dsbat-distro-version="${PKG_VER}"
+	-Dsbat-distro-pkgname="${PKG_NAME}"
+    )
+	
+
+    meson setup build "${_meson_options[@]}" --prefix=/usr --localstatedir=/var --libdir=/usr/lib
+    meson compile -C builddir
+    DESTDIR="$PKG_DEST_DIR" meson install -C builddir
 }
