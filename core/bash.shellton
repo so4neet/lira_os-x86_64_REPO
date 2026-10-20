@@ -29,6 +29,8 @@ build() {
 	--docdir=/usr/share/doc/$PKG_NAME
     )
 
+    ./configure "${_build_flags[@]}"
+
     make -j$(nproc)
 
     make install DESTDIR="$PKG_DEST_DIR"
