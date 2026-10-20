@@ -1,0 +1,45 @@
+PKG_NAME="gcc-core"
+PKG_PRETTY="GCC (Core)"
+PKG_DESC="Core GCC Compilers and LibGCC"
+PKG_VER="16.2.0"
+PKG_URL="https://ftp.gnu.org/gnu/gcc/gcc-${PKG_VER}/gcc-${PKG_VER}.tar.gz"
+
+BUILD_DEPENDS="binutils doxygen gcc-ada gcc-d git libisl libmpc python rust zstd lib32-gcc-libs lib32-glibc dejagnu expect inetutils python-pytest tcl"
+
+FLAG_PREPACKAGED=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+
+# Functions
+
+update() {
+    latest_tag=$(curl -s "https://ftp.gnu.org/gnu/gcc/" | grep -oP 'gcc-[0-9]+\.[0-9+\.[0-9]' | sed 's/^gcc-//' | sort -V | tail -n 1)
+    echo "Latest tagged release: $latest_tag"
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+
+    _build_flags=(
+	--prefix=/usr
+	--libdir=/usr/lib
+	--libexecdir=/usr/lib
+	--enable-languages=c,c++
+	--disable-multilib
+	--disable-bootstrap
+	--with-system-zlib
+    )
+
+    mkdir -p build
+    cd build
+    ../configure "${_build_flags[@]}"
+
+    # Build
+    make -j$(nproc)
+
+    # Move to dest
+    make install DESTDIR="$PKG_DEST_DIR"
+}
