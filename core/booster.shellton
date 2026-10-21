@@ -7,7 +7,7 @@ PKG_URL="https://github.com/anatol/booster.git"
 BUILD_DEPENDS="go git"
 
 FLAG_GIT=1
-FLAG_SYSPACKAGE=1
+FLAG_COREPACKAGE=1
 
 update() {
     latest_tag=$(git ls-remote --tags --refs "$PKG_URL" | awk -F/ '{print $NF}' | sort -V | tail -n 1)
