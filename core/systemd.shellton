@@ -18,7 +18,7 @@ FLAG_SYSPACKAGE_INSTALL_ROOT=1
 # Functions
 
 update() {
-    latest_tag=$(git ls-remote --tags --refs "$PKG_URL" | awk -F/ '{print $NF}' | sort -V | tail -n1)
+    latest_tag=$(git ls-remote --tags --refs "$PKG_URL" | awk -F/ '{print $NF}' | sort -V | tail -n 1)
     if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
        FLAG_OOD=1
        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"

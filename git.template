@@ -1,0 +1,22 @@
+PKG_NAME=""
+PKG_PRETTY=""
+PKG_DESC=""
+PKG_VER=""
+PKG_URL=""
+
+BUILD_DEPENDS=""
+
+FLAG_GIT=1
+
+# Functions
+
+update() {
+    latest_tag=$(git ls-remote --tags --refs "$PKG_URL" | awk -F/ '{print $NF}' | sort -V | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+}
