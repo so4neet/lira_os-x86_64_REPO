@@ -22,6 +22,7 @@ update() {
 }
 
 build() {
+    export LD_LIBRARY_PATH="$SYSLIB_PATH/lib"
 
     _build_flags=(
 	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
