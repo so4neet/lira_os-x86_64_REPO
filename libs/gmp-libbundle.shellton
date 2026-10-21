@@ -19,6 +19,7 @@ update() {
 build() {
     git checkout "${PKG_VER}"	# Needed for automake
     ./.bootstrap
+    ./configure
     make -j$(nproc)
     make install DESTDIR="${PKG_DEST_DIR}"
 }
