@@ -103,7 +103,7 @@ build() {
 	 fi
 	    
     	 if file "$binary" | grep -q "ELF"; then
-	    patchelf --set-rpath '$ORIGIN/../lib:$ORIGIN' "$binary" 2>/dev/null || true
+	    patchelf --set-rpath '$ORIGIN/../../lib/systemd:$ORIGIN/../../lib:$ORIGIN/../lib:$ORIGIN/lib:$ORIGIN' "$binary" 2>/dev/null || true
 	 fi
     done
 }
