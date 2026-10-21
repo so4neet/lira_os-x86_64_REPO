@@ -2,11 +2,11 @@ PKG_NAME="procps-ng"
 PKG_PRETTY="Procps-ng"
 PKG_DESC="Standard system process monitoring utilities"
 PKG_VER="4.0.7"
-PKG_URL="https://sourceforge.net/projects/procps-ng/files/Production/procps-${PKG_VER}.tar.xz"
+PKG_URL="https://gitlab.com/procps/procps.git"
 
 BUILD_DEPENDS="glibc ncurses"
 
-FLAG_PREPACKAGED=1
+FLAG_GIT=1
 FLAG_SYSPACKAGE=1
 FLAG_SYSPACKAGE_INSTALL_ROOT=1
 
@@ -29,6 +29,7 @@ update() {
 }
 
 build() {
+    ./autogen.sh
     ./configure \
         --prefix=/usr \
         --bindir=/usr/bin \
