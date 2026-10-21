@@ -17,6 +17,10 @@ update() {
 }
 
 build() {
+    export CFLAGS="-I${SYSLIB_PATH}/include"
+    export LDFLAGS="-L${SYSLIB_PATH}/lib"
+    export LD_LIBRARY_PATH="${SYSLIB_PATH}/lib"
+    
     _build_options=(
 	--prefix=/usr
 	--with-shared
