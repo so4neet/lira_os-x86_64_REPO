@@ -1,15 +1,10 @@
-# A TON of this is pulled directly from Arch Linux's PKGBUILD. The goal is not to steal,
-# but to use a known default (Arch) that works, and slowly tweak it to my own.
-
-# It's not 1:1, but it should be known :) 
-
 PKG_NAME="systemd"
 PKG_PRETTY="systemd"
-PKG_DESC="Core Init System"
+PKG_DESC="Core Init System including Runtime Dependencies"
 PKG_VER="v262.1"
 PKG_URL="https://github.com/systemd/systemd.git"
 
-BUILD_DEPENDS="acl apparmor cryptsetup docbook-xsl gperf lz4 xz pam libelf intltool iptables kmod libarchive libidn2 libgcrypt libmicrohttpd libxcrypt libxslt util-linux linux-api-headers python-jinja python-lxml quota-tools shadow git meson libseccomp pcre2 audit kexec-tools libxkbcommon bash-completion p11-kit systemd libfido2 tpm2-tss rsync bpf libbpf clang llvm curl gnutls python-pyelftools libpwquality qrencode lib32-gcc-libs python-pefile linux-headers"
+BUILD_DEPENDS="gperf meson ninja python-jinja python-lxml python-pyelftools patchelf"
 
 FLAG_GIT=1
 FLAG_COREPACKAGE=1
@@ -21,10 +16,14 @@ update() {
     if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
        FLAG_OOD=1
        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
-fi
+    fi
 }
 
 build() {
+    # Using host headers (This will likely change as package count grows)
+    export PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/share/pkgconfig"
+    export CPPFLAGS="-I/usr/include"
+    export LDFLAGS="-L/usr/lib"
 
     local _timeservers=(time.cloudflare.com)
     local _nameservers=(
@@ -35,41 +34,76 @@ build() {
       '8.8.8.8#dns.google'
       '2001:4860:4860::8888#dns.google'
     )
-      
 
     local _meson_options=(
         -Dversion-tag="${PKG_VER}-LiraOS"
         -Dvcs-tag=false
-	-Dshared-lib-tag="${PKG_VER}"
+        -Dshared-lib-tag="${PKG_VER}"
         -Dmode=release
-	-Dapparmor=enabled
-	-Dbootloader=enabled
-	-Dxenctrl=disabled
-	-Dbpf-framework=enabled
-	-Dima=false
-	-Dlibidn2=enabled
-	-Dlz4=enabled
-	-Dselinux=disabled
-	-Dsshdprivsepdir=/usr/share/empty.sshd
-	-Dsysupdated=enabled
-	-Dcompat-sysv-interfaces=false
-	-Ddbuspolicydir=/usr/share/dbus-1/system.d
-	-Ddefault-dnssec=no
-	-Ddefault-kill-user-processes=false
-	-Dlocalegen-path=/usr/bin/localegen
-	-Ddns-over-tls=openssl
-	-Dfallback-hostname='lira-os'
-	-Dntp-servers="${_timeservers[*]}"
-	-Ddns-servers="${_nameservers[*]}"
-	-Drpmmacrosdir=no
-	-Dsbat-distro='lira-os'
-	-Dsbat-distro-summary='Lira OS'
-	-Dsbat-distro-version="${PKG_VER}"
-	-Dsbat-distro-pkgname="${PKG_NAME}"
+        -Dapparmor=disabled
+        -Dselinux=disabled
+        -Dbootloader=enabled
+        -Dxenctrl=disabled
+        -Dbpf-framework=enabled
+        -Dima=false
+        -Dlibidn2=enabled
+        -Dlz4=enabled
+        -Dsysupdated=enabled
+        -Dcompat-sysv-interfaces=false
+        -Ddefault-dnssec=no
+        -Ddefault-kill-user-processes=false
+        -Dfallback-hostname='lira-os'
+        -Dntp-servers="${_timeservers[*]}"
+        -Ddns-servers="${_nameservers[*]}"
+        -Drpmmacrosdir=no
+        -Dsbat-distro='lira-os'
+        -Dsbat-distro-summary='Lira OS'
+        -Dsbat-distro-version="${PKG_VER}"
+        -Dsbat-distro-pkgname="${PKG_NAME}"
     )
-	
 
-    meson setup build "${_meson_options[@]}" --prefix=/usr --localstatedir=/var --libdir=/usr/lib
+    # Compile systemd
+    meson setup build "${_meson_options[@]}" --prefix=/usr --localstatedir=/var --libdir=/lib
     meson compile -C build
     DESTDIR="$PKG_DEST_DIR" meson install -C build
+
+    # Bundle runtime libs
+    # This deviates from the standard packaging type, however I think that's the distinction between
+    # corepackages and syspackages, corepackages aren't just a install "normally" package, they can
+    # define their *own* packaging types.
+    mkdir -p "$PKG_DEST_DIR/lib"
+
+    local runtime_libs=(
+        libblz4.so.*
+	libcap.so.*
+	libmount.so.*
+	libblkid.so.*
+	libkmod.so.*
+	libgcrypt.so.*
+	libgpg-error.so.*
+	libpcre2-8.so.*
+	libidn2.so.*
+	libzstd.so.*
+	libz.so.*
+    )
+
+    for pattern in "${runtime_libs[@]}"; do
+    	for lib in /lib/$pattern /usr/lib/$pattern; do
+	    if [ -f "$lib" ]; then
+	       cp -P "$lib" "$PKG_DEST_DIR/lib/" 2>/dev/null || true
+	    fi
+	done
+    done
+
+    # Patch rpaths like we do on syspackage, but *different*
+    find "$PKG_DEST_DIR" -type f 2>/dev/null | while read -r binary; do
+    	 if [[ "$binary" == *.efi ]]; then
+	    # DON'T patch the bootloader lmao
+	    continue
+	 fi
+	    
+    	 if file "$binary" | grep -q "ELF"; then
+	    patchelf --set-rpath '$ORIGIN/../lib:$ORIGIN' "$binary" 2>/dev/null || true
+	 fi
+    done
 }
