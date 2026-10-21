@@ -19,7 +19,7 @@ update() {
 
 build() {
     export CGO_ENABLED=0
-    go build -trimpath -ldflags="-s -w" -o booster-gen ./cmd/generator
+    go build -trimpath -ldflags="-s -w" -o booster-gen ./generator
     install -Dm755 booster-gen "$PKG_DEST_DIR/usr/bin/booster"
     if [ -f "docs/booster.yaml.example" ]; then
        install -Dm644 docs/booster.yaml.example "$PKG_DEST_DIR/etc/booster.yaml"
