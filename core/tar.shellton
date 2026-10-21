@@ -21,6 +21,7 @@ build() {
     _build_flags=(
 	--prefix=/usr
 	--bindir=/bin
+	--disable-acl
     )
 
     ./configure "${_build_flags[@]}"
