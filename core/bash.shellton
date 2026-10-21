@@ -3,12 +3,11 @@ PKG_PRETTY="Bash"
 PKG_DESC="GNU Bourne Again SHell"
 PKG_VER="5.3"
 PKG_URL="https://ftp.gnu.org/gnu/bash/bash-${PKG_VER}.tar.gz"
-
+PKG_DEPENDS="readline ncurses"
 BUILD_DEPENDS="readline libreadline.so glibc ncurses bash-completion"
 
 FLAG_PREPACKAGED=1
-FLAG_SYSPACKAGE=1
-FLAG_SYSPACKAGE_INSTALL_ROOT=1
+FLAG_COREPACKAGE=1
 
 # Functions
 
@@ -22,11 +21,12 @@ update() {
 }
 
 build() {
+    export LD_LIBRARY_PATH="$SYSLIB_PATH/lib"
 
     _build_flags=(
-	--prefix=/usr
+	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
 	--without-bash-malloc
-	--docdir=/usr/share/doc/$PKG_NAME
+	--docdir="/opt/syspackages/${PKG_NAME}-${PKG_VER}/share/doc/$PKG_NAME"
     )
 
     ./configure "${_build_flags[@]}"

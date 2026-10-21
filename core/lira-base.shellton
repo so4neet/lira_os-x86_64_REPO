@@ -7,8 +7,7 @@ PKG_URL="https://github.com/so4neet/lira-base.git"
 BUILD_DEPENDS="cowsay"
 
 FLAG_GIT=1
-FLAG_SYSPACKAGE=1
-FLAG_SYSPACKAGE_INSTALL_ROOT=1
+FLAG_COREPACKAGE=1
 FLAG_LIRA_LOWLEVEL=1
 
 # Functions
