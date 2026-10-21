@@ -2,7 +2,7 @@ PKG_NAME="procps-ng"
 PKG_PRETTY="Procps-ng"
 PKG_DESC="Standard system process monitoring utilities"
 PKG_VER="4.0.7"
-PKG_URL="https://gitlab.com/procps/procps.git"
+PKG_URL="https://gitlab.com/procps-ng/procps.git"
 
 BUILD_DEPENDS="glibc ncurses"
 
