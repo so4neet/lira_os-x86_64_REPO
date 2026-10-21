@@ -1,0 +1,30 @@
+PKG_NAME="iputils"
+PKG_PRETTY="iputils"
+PKG_DESC="Set of small utilites for Linux networking"
+PKG_VER="20250605"
+PKG_URL="https://github.com/iputils/iputils.git"
+
+BUILD_DEPENDS="clang docbook-xml docbook-xsl file gcc git gettext iproute2 jq libcap libxslt meson pkgconf"
+
+FLAG_GIT=1
+
+# Functions
+
+update() {
+    # Edited to match iputils naming scheme
+    latest_tag=$(git ls-remote --tags --refs "$PKG_URL" | awk -F/ '{print $NF}' | grep -E '^(s)?[0-9]{8}$ | sed 's/^s//' |sort -V | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+
+    _build_options=(
+	--prefix=/usr
+    )
+    meson setup build "${_build_options[@]}" 
+    meson compile -C build
+    DESTDIR="$PKG_DEST_DIR" meson install -C build
+}
