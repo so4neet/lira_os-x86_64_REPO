@@ -28,6 +28,6 @@ build() {
         --disable-static
     )
     ./configure
-    make SHLIB_LIBS="-lncurses" -j$(nproc)
-    make install DESTDIR="${PKG_DEST_DIR}" SHLIB_LIBS="-lncurses"
+    make SHLIB_LIBS="-lncursesw" -j$(nproc)
+    make install DESTDIR="${PKG_DEST_DIR}" SHLIB_LIBS="-lncursesw"
 }
