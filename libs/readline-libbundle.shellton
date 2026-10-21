@@ -20,7 +20,8 @@ build() {
     _build_options=(
 	--prefix=/usr
 	--with-shared
-	--disable-static
+	--with-curses
+        --disable-static
     )
     ./configure
     make SHLIB_LIBS="-lncurses" -j$(nproc)
