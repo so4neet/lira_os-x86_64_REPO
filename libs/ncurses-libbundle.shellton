@@ -17,7 +17,7 @@ update() {
 }
 
 build() {
-    ./configure
+    ./configure --with-shared
     make -j$(nproc)
     make install DESTDIR="${PKG_DEST_DIR}"
 }
