@@ -1,0 +1,24 @@
+PKG_NAME="lira-base"
+PKG_PRETTY="LiraOS Base"
+PKG_DESC="The base filesystem for Lira OS"
+PKG_VER="0.1"
+PKG_URL="https://github.com/so4neet/lira-base.git"
+
+BUILD_DEPENDS="cowsay"
+
+FLAG_GIT=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+FLAG_LIRA_LOWLEVEL=1
+
+# Functions
+
+update() {
+    echo "Always re-fetch"
+    FLAG_OOD=1
+}
+
+build() {
+    echo "LiraOS!" | cowsay
+    cp lira-base.syspackage "$PKG_DEST_DIR"
+}
