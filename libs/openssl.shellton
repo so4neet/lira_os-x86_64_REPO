@@ -1,0 +1,23 @@
+PKG_NAME="openssl-libbundle"
+PKG_VER="4.0.3"
+PKG_URL="https://github.com/openssl/openssl.git"
+BUILD_DEPENDS="perl"
+
+FLAG_GIT=1
+FLAG_LIB=1
+
+# Functions
+
+update() {
+    latest_tag=$(git ls-remote --tags --refs "https://github.com/openssl/openssl.git" | awk -F/ '{print $NF}' | sed 's/^openssl-//' | grep -E '[0-9].[0-9].[0-9]'  |grep -E -v '(beta|alpha)' | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    ./Configure
+    make -j$(nproc)
+    make install DESTDIR="$PKG_DEST_DIR"
+}
