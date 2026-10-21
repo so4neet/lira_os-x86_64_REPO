@@ -30,6 +30,6 @@ build() {
     )
     
     ./configure "${_build_flags[@]}"
-    make -j$(nproc)
-    make install DESTDIR="$PKG_DEST_DIR"
+    make -j$(nproc) HELP2MAN=true
+    make install DESTDIR="$PKG_DEST_DIR" HELP2MAN=true
 }
