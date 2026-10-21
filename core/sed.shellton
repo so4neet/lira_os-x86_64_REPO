@@ -1,0 +1,35 @@
+PKG_NAME="sed"
+PKG_PRETTY="sed"
+PKG_DESC="GNU sed"
+PKG_VER="4.10"
+PKG_URL="https://ftp.gnu.org/gnu/${PKG_NAME}/${PKG_NAME}-${PKG_VER}.tar.xz"
+
+BUILD_DEPENDS="glibc"
+
+FLAG_PREPACKAGED=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+
+# Functions
+
+update() {
+    latest_tag=$(curl -s "https://ftp.gnu.org/gnu/${PKG_NAME}/" | grep -oP '${PKG_NAME}-[0-9]+\.[0-9+(\.[0-9]+)?\.tar\.xz' | sed 's/${PKG_NAME}-//;s/\.tar\.xz//' | sort -V | tail -n 1)
+    echo "Latest tagged release: $latest_tag:
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+
+    _build_flags=(
+	--prefix=/usr
+    )
+
+    ./configure "${_build_flags[@]}"
+
+    make -j$(nproc)
+
+    make install DESTDIR="$PKG_DEST_DIR"
+}

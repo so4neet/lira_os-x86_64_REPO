@@ -1,0 +1,31 @@
+PKG_NAME="tar"
+PKG_PRETTY="Tar"
+PKG_DESC="GNU Tar"
+PKG_VER="latest"
+PKG_URL="https://ftp.gnu.org/gnu/${PKG_NAME}/${PKG_NAME}-${PKG_VER}.tar.xz"
+
+BUILD_DEPENDS="glibc"
+
+FLAG_PREPACKAGED=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+
+# Functions
+
+update() {
+    echo "Tar uses the -latest in the filename, no need to check"
+}
+
+build() {
+
+    _build_flags=(
+	--prefix=/usr
+	--bindir=/bin
+    )
+
+    ./configure "${_build_flags[@]}"
+
+    make -j$(nproc)
+
+    make install DESTDIR="$PKG_DEST_DIR"
+}
