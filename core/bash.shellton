@@ -7,7 +7,7 @@ PKG_DEPENDS="readline ncurses"
 BUILD_DEPENDS="readline libreadline.so glibc ncurses bash-completion"
 
 FLAG_PREPACKAGED=1
-FLAG_COREPACKAGE=1
+FLAG_SYSPACKAGE=1
 
 # Functions
 
@@ -35,6 +35,6 @@ build() {
 
     make install DESTDIR="$PKG_DEST_DIR"
 
-    # Symlink bash to sh
-    ln -sf bash "${PKG_DEST_DIR}/usr/bin/sh"
+    # Symlink bash to sh | This doesn't work with the Syspackage, I don't have the energy this second to make it work.
+    # ln -sf bash "${PKG_DEST_DIR}/usr/bin/sh"
 }
