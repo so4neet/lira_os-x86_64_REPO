@@ -1,0 +1,45 @@
+PKG_NAME="pciutils"
+PKG_PRETTY="pciutils"
+PKG_DESC="PCI bus configuration and inspection utilities"
+PKG_VER="3.15.0"
+PKG_URL="https://www.kernel.org/pub/software/utils/pciutils/pciutils-${PKG_VER}.tar.xz"
+
+BUILD_DEPENDS="glibc zlib"
+
+FLAG_PREPACKAGED=1
+FLAG_SYSPACKAGE=1
+FLAG_SYSPACKAGE_INSTALL_ROOT=1
+
+# Functions
+
+update() {
+    latest_tag=$(git ls-remote --tags --refs "https://github.com/pciutils/pciutils" \
+        | awk -F/ '{print $NF}' \
+        | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+        | sed 's/^v//' \
+        | sort -V \
+        | tail -n 1)
+
+    echo "Latest tagged release: $latest_tag"
+
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+        FLAG_OOD=1
+        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    # Build shared libraries and utilities
+    make PREFIX=/usr \
+        SHAREDIR=/usr/share/hwdata \
+        SBINDIR=/usr/bin \
+        SHARED=yes \
+        -j$(nproc)
+
+    make PREFIX=/usr \
+        SHAREDIR=/usr/share/hwdata \
+        SBINDIR=/usr/bin \
+        SHARED=yes \
+        DESTDIR="$PKG_DEST_DIR" \
+        install install-lib
+}
