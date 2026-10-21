@@ -1,0 +1,24 @@
+PKG_NAME="iproute2"
+PKG_PRETTY="iproute2"
+PKG_DESC="Set of utilities for Linux networking"
+PKG_VER="v7.2.0"
+PKG_URL="https://github.com/iproute2/iproute2.git"
+
+BUILD_DEPENDS="gdbm"
+
+FLAG_GIT=1
+
+# Functions
+
+update() {
+    latest_tag=$(git ls-remote --tags --refs "$PKG_URL" | awk -F/ '{print $NF}' | sort -V | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    make -j$(nproc)
+    make install DESTDIR="$PKG_DEST_DIR"
+}
