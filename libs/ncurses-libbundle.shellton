@@ -17,7 +17,15 @@ update() {
 }
 
 build() {
-    ./configure --with-shared
+    _build_options=(
+	--prefix=/usr
+	--with-shared
+	--without-debug
+	--without-ada
+	--disable-cxx-binding
+	--enable-widec
+    )
+    ./configure "${_build_options[@]}"
     make -j$(nproc)
     make install DESTDIR="${PKG_DEST_DIR}"
 }
