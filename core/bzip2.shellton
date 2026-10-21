@@ -24,7 +24,7 @@ build() {
     make -f Makefile-libbz2_so -j$(nproc)
     make clean
     make -j$(nproc)
-    make PREFIX=/usr install DESTDIR="$PKG_DEST_DIR"
+    make PREFIX="$PKG_DEST_DIR/usr" install"
     mkdir -p "$PKG_DEST_DIR/usr/lib" "$PKG_DEST_DIR/usr/bin"
     cp -av libbz2.so.* "$PKG_DEST_DIR/usr/lib/"
     ln -sf libbz2.so.1.0.8 "$PKG_DEST_DIR/usr/lib/libbz2.so"
