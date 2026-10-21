@@ -26,6 +26,7 @@ build() {
 	--prefix=/usr
 	--disable-static
     )
+    autoreconf -fi
     ./configure "${_build_options[@]}"
     make -j$(nproc)
     make install DESTDIR="$PKG_DEST_DIR"
