@@ -18,5 +18,5 @@ update() {
 
 build() {
     make
-    make install DESTDIR="${PKG_WORK_DIR}"
+    make install DESTDIR="${PKG_DEST_DIR}"
 }
