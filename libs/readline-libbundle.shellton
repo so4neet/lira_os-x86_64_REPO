@@ -1,6 +1,6 @@
 PKG_NAME="readline-libbundle"
 PKG_VER="8.3"
-PKG_URL="https://ftp.gnu.org/gnu/readline"
+PKG_URL="https://ftp.gnu.org/gnu/readline/readline-${PKG_VER}.tar.gz"
 BUILD_DEPENDS=""
 
 FLAG_PREPACKAGED=1
