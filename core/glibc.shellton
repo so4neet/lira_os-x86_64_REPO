@@ -7,8 +7,7 @@ PKG_URL="https://ftp.gnu.org/gnu/libc/glibc-${PKG_VER}.tar.gz"
 BUILD_DEPENDS="gd git python lib32-gcc-libs"
 
 FLAG_PREPACKAGED=1
-FLAG_SYSPACKAGE=1
-FLAG_SYSPACKAGE_INSTALL_ROOT=1
+FLAG_COREPACKAGE=1
 
 # Functions
 
