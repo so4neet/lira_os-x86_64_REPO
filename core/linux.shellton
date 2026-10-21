@@ -8,8 +8,7 @@ PKG_URL="https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/linux-${PK
 BUILD_DEPENDS="bc binutils cpio gettext glibc libelf libgcc openssl pahole perl python rust rust-bindgen rust-src tar xxhash xz zlib zstd"
 
 FLAG_PREPACKAGED=1
-FLAG_SYSPACKAGE=1
-FLAG_SYSPACKAGE_INSTALL_ROOT=1
+FLAG_COREPACKAGE=1
 
 # Functions
 
