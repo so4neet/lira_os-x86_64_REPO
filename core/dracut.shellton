@@ -3,7 +3,7 @@ PKG_PRETTY="Dracut"
 PKG_DESC="Modular initramfs generation tool"
 PKG_VER="059"
 PKG_URL="https://github.com/dracutdevs/dracut/archive/refs/tags/${PKG_VER}.tar.gz"
-BUILD_DEPENDS="glibc-libbundle kmod-libbundle util-linux-libbundle linux"
+BUILD_DEPENDS="glibc-libbundle kmod-libbundle util-linux-libbundle linux asciidoc"
 
 FLAG_PREPACKAGED=1
 FLAG_COREPACKAGE=1
@@ -23,7 +23,7 @@ build() {
         --sysconfdir=/etc \
         --libdir=/usr/lib
 
-    # Install dracut directly into the corepackage destination directory
+    make -j$(nproc)
     make DESTDIR="$PKG_DEST_DIR" install
 
     # Ensure standard dracut directories exist in the package structure
