@@ -34,6 +34,7 @@ build() {
     )
     
     ./configure "${_build_flags[@]}"
+    touch man/*.1
     make -j$(nproc) HELP2MAN=true
     make install DESTDIR="$PKG_DEST_DIR" HELP2MAN=true
 }
