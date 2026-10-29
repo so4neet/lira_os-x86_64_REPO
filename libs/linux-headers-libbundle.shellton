@@ -1,7 +1,7 @@
 PKG_NAME="linux-headers-libbundle"
 PKG_PRETTY="Linux Headers"
 PKG_DESC="Linux kernel UAPI headers"
-PKG_VER="7.3.0"
+PKG_VER="7.3"
 KERNEL_SUBSTRING="${PKG_VER%%.*}.x"
 PKG_URL="https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/linux-${PKG_VER}.tar.xz"
 
