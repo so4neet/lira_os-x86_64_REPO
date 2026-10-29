@@ -24,6 +24,7 @@ build() {
     export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
     export CFLAGS="-I${SYSLIB_PATH}/include"
     export LDFLAGS="-L${SYSLIB_PATH}/lib"
+    export LD_LIBRARY_PATH="$SYSLIB_PATH/lib"
 
     _build_flags=(
 	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
@@ -34,10 +35,6 @@ build() {
     )
     ./configure "${_build_flags[@]}"
 
-    if [ -f "man/Makefile" ]; then
-       sed -i 's/^all-am:.*/all-am:/' man/Makefile
-    fi
-    
-    make -j$1
+    make -j$(nproc)
     make install DESTDIR="$PKG_DEST_DIR"
 }
