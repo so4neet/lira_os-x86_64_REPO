@@ -32,9 +32,12 @@ build() {
 	--enable-no-install-program=kill,uptime
         --with-openssl
     )
-    HELP2MAN=: ./configure "${_build_flags[@]}"
+    ./configure "${_build_flags[@]}"
 
-    find . -name "Makefile" -exec sed -i 's|^HELP2MAN *=.*|HELP2MAN = :|' {} +
+    if [ -f "man/Makefile" ]; then
+       sed -i 's/^all-am:.*/all-am:/' man/Makefile
+    fi
+    
     make -j$(nproc)
     make install DESTDIR="$PKG_DEST_DIR"
 }
