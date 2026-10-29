@@ -17,7 +17,11 @@ update() {
 }
 
 build() {
-    ./Configure
+    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
+    export CFLAGS="-I${SYSLIB_PATH}/include"
+    export LDFLAGS="-L${SYSLIB_PATH}/lib"
+    
+    ./Configure --prefix=/usr --libdir=/usr/lib
     make -j$(nproc)
     make install DESTDIR="$PKG_DEST_DIR"
 }
