@@ -33,8 +33,7 @@ build() {
         --with-openssl
     )
     
-    ./configure "${_build_flags[@]}"
-    touch man/*.1
-    make -j$(nproc) HELP2MAN=true
+    HELP2MAN=true ./configure "${_build_flags[@]}"
+    make -j$(nproc)
     make install DESTDIR="$PKG_DEST_DIR" HELP2MAN=true
 }
