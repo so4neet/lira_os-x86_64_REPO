@@ -1,4 +1,4 @@
-PKG_NAME="glibc"
+PKG_NAME="glibc-libbundle"
 PKG_PRETTY="glibc"
 PKG_DESC="GNU C Library"
 PKG_VER="2.44"
