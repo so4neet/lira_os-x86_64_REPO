@@ -27,7 +27,6 @@ build() {
     _build_flags=(
 	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
 	--without-bash-malloc
-	--with-installed-readline-no
     )
 
     ./configure "${_build_flags[@]}"
