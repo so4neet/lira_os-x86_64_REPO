@@ -21,13 +21,12 @@ update() {
 
 build() {
     export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
-    export CFLAGS="-I${SYSLIB_PATH}/include"
+    export CFLAGS="-I${SYSLIB_PATH}/include -Wno-implicit-function-declaration -Wno-int-conversion"
     export LDFLAGS="-L${SYSLIB_PATH}/lib"
 
     _build_flags=(
 	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
 	--without-bash-malloc
-	--docdir="/opt/syspackages/${PKG_NAME}-${PKG_VER}/share/doc/$PKG_NAME"
 	--with-installed-readline-no
     )
 
