@@ -1,9 +1,9 @@
 PKG_NAME="dracut"
-PKG_PRETTY="Dracut Initramfs Generator"
-PKG_DESC="Modular initramfs generation tool for Lira OS"
+PKG_PRETTY="Dracut"
+PKG_DESC="Modular initramfs generation tool"
 PKG_VER="059"
 PKG_URL="https://github.com/dracutdevs/dracut/archive/refs/tags/${PKG_VER}.tar.gz"
-BUILD_DEPENDS="glibc-libbundle kmod-libbundle util-linux linux"
+BUILD_DEPENDS="glibc-libbundle kmod-libbundle util-linux-libbundle linux"
 
 FLAG_PREPACKAGED=1
 FLAG_COREPACKAGE=1
