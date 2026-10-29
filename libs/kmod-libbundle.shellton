@@ -20,6 +20,7 @@ build() {
     --libdir=/usr/lib
     --with-zstd
     --with-xz
+    --disable-manpages
   )
   
   ./configure "${_build_options[@]}"

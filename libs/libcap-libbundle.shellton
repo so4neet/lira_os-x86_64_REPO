@@ -17,6 +17,6 @@ update() {
 }
 
 build() {
-    make
-    make install DESTDIR="${PKG_DEST_DIR}"
+    make prefix=/usr lib=lib RAISE_SETFCAP=no
+    make prefix=/usr lib=lib RAISE_SETFCAP=no install DESTDIR="${PKG_DEST_DIR}"
 }

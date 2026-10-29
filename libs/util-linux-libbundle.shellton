@@ -20,8 +20,20 @@ update() {
 }
 
 build() {
+    _build_options=(
+	--prefix=/usr
+	--libdir=/usr/lib
+	--disable-all-programs
+	--enable-libmount
+	--enable-libblkid
+	--enable-libuuid
+	--disable-wall
+	--disable-su
+	--disable-sulogin
+	--disable-login
+    )
     ./autogen.sh
-    ./configure
+    ./configure "${_build_options[@]}"
     make -j$(nproc)
     make install DESTDIR="$PKG_DEST_DIR"
 }
