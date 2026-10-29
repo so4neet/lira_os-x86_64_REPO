@@ -1,6 +1,6 @@
 PKG_NAME="systemd"
 PKG_PRETTY="systemd"
-PKG_DESC="Core Init System including Runtime Dependencies"
+PKG_DESC="Core Init System and Libraries"
 PKG_VER="v262.1"
 PKG_URL="https://github.com/systemd/systemd.git"
 
@@ -68,4 +68,19 @@ build() {
     meson setup build "${_meson_options[@]}"
     meson compile -C build
     DESTDIR="$PKG_DEST_DIR" meson install -C build
+    # Find dependencies and bundle 
+    mkdir -p "$PKG_DEST_DIR/usr/lib"
+    find "$PKG_DEST_DIR/usr" -type f \( -perm -u+x -o -name "*.so*" \) | while read -r bin; do
+      if ! readelf -h "$bin" >/dev/null 2>&1; then
+        continue;
+      fi
+      for lib in $(readelf -d "$bin" 2>/dev/null | grep NEEDED | awk -F'[][]' '{print $2}'); do
+        if [ -f "${SYSLIB_PATH}/usr/lib/$lib" ]; then
+	  cp -n "${SYSLIB_PATH}/usr/lib/$lib" "$PKG_DEST_DIR/usr/lib/"
+	elif [ -f "${SYSLIB_PATH}/lib/$lib" ]; then
+	  cp -n "${SYSLIB_PATH}/lib/$lib" "$PKG_DEST_DIR/lib/"
+	fi
+      done
+      patchelf --set-rpath '$ORIGIN/../lib' "$bin" 2>/dev/null || true
+    done
 }
