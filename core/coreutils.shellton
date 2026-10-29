@@ -3,8 +3,7 @@ PKG_PRETTY="Coreutils"
 PKG_DESC="Basic file, shell and text manipulation utilities of the GNU operating system"
 PKG_VER="9.12"
 PKG_URL="https://ftp.gnu.org/gnu/coreutils/coreutils-${PKG_VER}.tar.gz"
-PKG_DEPENDS="acl attr openssl libcap gmp"
-BUILD_DEPENDS="acl attr glibc gmp libcap openssl git gperf python wget"
+BUILD_DEPENDS="glibc-libbundle"
 
 FLAG_PREPACKAGED=1
 FLAG_SYSPACKAGE=1
@@ -22,12 +21,16 @@ update() {
 }
 
 build() {
-    export LD_LIBRARY_PATH="$SYSLIB_PATH/lib"
+    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
+    export CFLAGS="-I${SYSLIB_PATH}/include"
+    export LDFLAGS="-L${SYSLIB_PATH}/lib"
 
     _build_flags=(
 	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
+	--enable-install-program=hostname
 	--libexecdir="/opt/syspackages/${PKG_NAME}-${PKG_VER}/lib/coreutils"
-	--with-openssl
+	--enable-no-install-program=kill,uptime
+        --with-openssl
     )
     
     ./configure "${_build_flags[@]}"

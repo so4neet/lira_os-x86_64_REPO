@@ -1,0 +1,21 @@
+PKG_NAME="libgpg-error-libbundle"
+PKG_VER="1.61"
+PKG_URL="https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${PKG_VER}.tar.bz2"
+BUILD_DEPENDS="glibc-libbundle"
+
+FLAG_PREPACKAGED=1
+FLAG_LIB=1
+
+update() {
+    latest_tag=$(curl -s https://gnupg.org/ftp/gcrypt/libgpg-error/ | grep -oP 'libgpg-error-\K[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+        FLAG_OOD=1
+        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    ./configure --prefix=/usr --libdir=/usr/lib
+    make -j$(nproc)
+    make DESTDIR="$PKG_DEST_DIR" install
+}

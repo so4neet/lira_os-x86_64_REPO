@@ -1,12 +1,13 @@
-PKG_NAME="util-linux"
+PKG_NAME="util-linux-libbundle"
 PKG_PRETTY="util-linux"
 PKG_DESC="Linux utilities"
 PKG_VER="v2.42.4"
-PKG_URL=""
+PKG_URL="https://github.com/util-linux/util-linux.git"
 
-BUILD_DEPENDS=""
+BUILD_DEPENDS="glibc-libbundle"
 
 FLAG_GIT=1
+FLAG_LIB=1
 
 # Functions
 

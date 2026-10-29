@@ -4,7 +4,7 @@ PKG_DESC="Core Init System including Runtime Dependencies"
 PKG_VER="v262.1"
 PKG_URL="https://github.com/systemd/systemd.git"
 
-BUILD_DEPENDS="gperf meson ninja python-jinja python-lxml python-pyelftools patchelf"
+BUILD_DEPENDS="glibc-libbundle linux-headers-libbundle libcap-libbundle util-linux-libbundle kmod-libbundle libelf-libbundle libbpf-libbundle libgcrypt-libbundle pcre2-libbundle libidn2-libbundle lz4-libbundle zstd-libbundle"
 
 FLAG_GIT=1
 FLAG_COREPACKAGE=1
@@ -20,10 +20,9 @@ update() {
 }
 
 build() {
-    # Using host headers (This will likely change as package count grows)
-    export PKG_CONFIG_PATH="/usr/lib/pkgconfig:/usr/share/pkgconfig"
-    export CPPFLAGS="-I/usr/include"
-    export LDFLAGS="-L/usr/lib"
+    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig:${SYSLIB_PATH}/usr/share/pkgconfig"
+    export CPPFLAGS="-I${SYSLIB_PATH}/usr/include"
+    export LDFLAGS="-L${SYSLIB_PATH}/usr/lib"
 
     local _timeservers=(time.cloudflare.com)
     local _nameservers=(
@@ -36,6 +35,9 @@ build() {
     )
 
     local _meson_options=(
+        --prefix=/usr
+	--sysconfdir=/etc
+	--localstatedir=/var
         -Dversion-tag="${PKG_VER}-LiraOS"
         -Dvcs-tag=false
         -Dshared-lib-tag="${PKG_VER}"
@@ -63,47 +65,7 @@ build() {
     )
 
     # Compile systemd
-    meson setup build "${_meson_options[@]}" --prefix=/usr --localstatedir=/var --libdir=/lib
+    meson setup build "${_meson_options[@]}"
     meson compile -C build
     DESTDIR="$PKG_DEST_DIR" meson install -C build
-
-    # Bundle runtime libs
-    # This deviates from the standard packaging type, however I think that's the distinction between
-    # corepackages and syspackages, corepackages aren't just a install "normally" package, they can
-    # define their *own* packaging types.
-    mkdir -p "$PKG_DEST_DIR/lib"
-
-    local runtime_libs=(
-        libblz4.so.*
-	libcap.so.*
-	libmount.so.*
-	libblkid.so.*
-	libkmod.so.*
-	libgcrypt.so.*
-	libgpg-error.so.*
-	libpcre2-8.so.*
-	libidn2.so.*
-	libzstd.so.*
-	libz.so.*
-    )
-
-    for pattern in "${runtime_libs[@]}"; do
-    	for lib in /lib/$pattern /usr/lib/$pattern; do
-	    if [ -f "$lib" ]; then
-	       cp -P "$lib" "$PKG_DEST_DIR/lib/" 2>/dev/null || true
-	    fi
-	done
-    done
-
-    # Patch rpaths like we do on syspackage, but *different*
-    find "$PKG_DEST_DIR" -type f 2>/dev/null | while read -r binary; do
-    	 if [[ "$binary" == *.efi ]]; then
-	    # DON'T patch the bootloader lmao
-	    continue
-	 fi
-	    
-    	 if file "$binary" | grep -q "ELF"; then
-	    patchelf --set-rpath '$ORIGIN/../../lib/systemd:$ORIGIN/../../lib:$ORIGIN/../lib:$ORIGIN/lib:$ORIGIN' "$binary" 2>/dev/null || true
-	 fi
-    done
 }

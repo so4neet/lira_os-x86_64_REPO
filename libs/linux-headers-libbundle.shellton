@@ -1,0 +1,25 @@
+PKG_NAME="linux-headers-libbundle"
+PKG_PRETTY="Linux Headers"
+PKG_DESC="Linux kernel UAPI headers"
+PKG_VER="7.3.0"
+KERNEL_SUBSTRING="${PKG_VER%%.*}.x"
+PKG_URL="https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/linux-${PKG_VER}.tar.xz"
+
+FLAG_PREPACKAGED=1
+FLAG_LIB=1
+
+update() {
+  latest_tag=$(curl -s "https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/" | grep -oP 'linux-[0-9+\.[0-9]+(\.[0-9]+)?\.tar\.xz' | sed 's/linux-//;s/\.tar.xz//' | sort -V | tail -n 1)
+  echo "Latest tagged release: $latest_tag"
+  if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+     FLAG_OOD=1
+     sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+  fi
+}
+
+build() {
+  make mrproper
+
+  make ARCH=x86_64 INSTALL_HDR_PATH="$PKG_DEST_DIR/usr" headers_install
+  find "$PKG_DEST_DIR/usr/include" -type f \( -name '.*' -o -name 'Makefile' \) -delete
+}

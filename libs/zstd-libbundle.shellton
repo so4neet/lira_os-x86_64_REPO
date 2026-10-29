@@ -1,0 +1,20 @@
+PKG_NAME="zstd-libbundle"
+PKG_VER="1.5.7"
+PKG_URL="https://github.com/meta/zstd/releases/download/v${PKG_VER}/zstd-${PKG_VER}.tar.gz"
+BUILD_DEPENDS="glibc-libbundle"
+
+FLAG_PREPACKAGED=1
+FLAG_LIB=1
+
+update() {
+    latest_tag=$(curl -s https://api.github.com/repos/meta/zstd/releases/latest | grep -oP '"tag_name":\s*"v\K[^"]+')
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+        FLAG_OOD=1
+        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    make prefix=/usr
+    make prefix=/usr DESTDIR="$PKG_DEST_DIR" install
+}

@@ -3,8 +3,7 @@ PKG_PRETTY="Bash"
 PKG_DESC="GNU Bourne Again SHell"
 PKG_VER="5.3"
 PKG_URL="https://ftp.gnu.org/gnu/bash/bash-${PKG_VER}.tar.gz"
-PKG_DEPENDS="readline ncurses"
-BUILD_DEPENDS="readline libreadline.so glibc ncurses bash-completion"
+BUILD_DEPENDS="glibc-libbundle ncurses-libbundle"
 
 FLAG_PREPACKAGED=1
 FLAG_SYSPACKAGE=1
@@ -21,12 +20,15 @@ update() {
 }
 
 build() {
-    export LD_LIBRARY_PATH="$SYSLIB_PATH/lib"
+    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
+    export CFLAGS="-I${SYSLIB_PATH}/include"
+    export LDFLAGS="-L${SYSLIB_PATH}/lib"
 
     _build_flags=(
 	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
 	--without-bash-malloc
 	--docdir="/opt/syspackages/${PKG_NAME}-${PKG_VER}/share/doc/$PKG_NAME"
+	--with-installed-readline-no
     )
 
     ./configure "${_build_flags[@]}"
@@ -35,6 +37,4 @@ build() {
 
     make install DESTDIR="$PKG_DEST_DIR"
 
-    # Symlink bash to sh | This doesn't work with the Syspackage, I don't have the energy this second to make it work.
-    # ln -sf bash "${PKG_DEST_DIR}/usr/bin/sh"
 }

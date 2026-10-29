@@ -1,0 +1,21 @@
+PKG_NAME="pcre2-libbundle"
+PKG_VER="10.49"
+PKG_URL="https://github.com/PCRE2Project/pcre2/releases/download/pcre2-${PKG_VER}/pcre2-${PKG_VER}.tar.gz"
+BUILD_DEPENDS="glibc-libbundle"
+
+FLAG_PREPACKAGED=1
+FLAG_LIB=1
+
+update() {
+    latest_tag=$(curl -s https://api.github.com/repos/PCRE2Project/pcre2/releases/latest | grep -oP '"tag_name":\s*"pcre2-\K[^"]+')
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+        FLAG_OOD=1
+        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    ./configure --prefix=/usr --libdir=/usr/lib --enable-unicode
+    make -j$(nproc)
+    make DESTDIR="$PKG_DEST_DIR" install
+}

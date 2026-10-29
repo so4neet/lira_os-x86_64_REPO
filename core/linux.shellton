@@ -22,11 +22,10 @@ update() {
 }
 
 build() {
-
+    make mrproper
     make x86_64_defconfig
 
-    make -j$(nproc) bzImage
-    make -j$(nproc) modules
+    make -j$(nproc) ARCH=x86_64 bzImage modules
 
     mkdir -p "${PKG_DEST_DIR}/boot"
     mkdir -p "${PKG_DEST_DIR}/lib/modules"
@@ -34,7 +33,9 @@ build() {
     local KERNEL_REL
     KERNEL_REL="$(make kernelrelease)"
     make INSTALL_MOD_PATH="${PKG_DEST_DIR}" modules_install
-    cp arch/x86/boot/bzImage "${PKG_DEST_DIR}/boot/vmlinuz-$KERNEL_REL"
-    cp System.map "${PKG_DEST_DIR}/boot/System.map-$KERNEL_REL"
-    cp .config "${PKG_DEST_DIR}/boot/config-$KERNEL_REL"
+    cp arch/x86/boot/bzImage "${PKG_DEST_DIR}/boot/vmlinuz-$KERNEL_REL-lira"
+    local mod_dir="$PKG_DEST_DIR/lib/modules"
+    if [ -d "$mod_dir" ]; then
+      find "$mod_dir" -maxdepth 2 \( -name "build" -o -name "source" \) -delete
+    fi
 }

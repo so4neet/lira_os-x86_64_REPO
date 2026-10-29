@@ -1,7 +1,7 @@
 PKG_NAME="libcap-libbundle"
 PKG_VER="2.78"
 PKG_URL="https://git.kernel.org/pub/scm/libs/libcap/libcap.git"
-BUILD_DEPENDS="git go linux-api-headers"
+BUILD_DEPENDS="glibc-libbundle"
 
 FLAG_GIT=1
 FLAG_LIB=1

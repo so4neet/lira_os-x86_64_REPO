@@ -1,0 +1,21 @@
+PKG_NAME="libbpf-libbundle"
+PKG_VER="1.8.0"
+PKG_URL="https://github.com/libbpf/libbpf/archive/refs/tags/v${PKG_VER}.tar.gz"
+BUILD_DEPENDS="glibc-libbundle linux-headers-libbundle"
+
+FLAG_PREPACKAGED=1
+FLAG_LIB=1
+
+update() {
+    latest_tag=$(curl -s https://api.github.com/repos/libbpf/libbpf/releases/latest | grep -oP '"tag_name":\s*"v\K[^"]+')
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+        FLAG_OOD=1
+        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    cd src
+    BUILD_STATIC_ONLY=0 make prefix=/usr libdir=/lib
+    BUILD_STATIC_ONLY=0 make prefix=/usr libdir=/lib DESTDIR="$PKG_DEST_DIR" install
+}

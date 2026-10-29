@@ -1,7 +1,7 @@
 PKG_NAME="ncurses-libbundle"
 PKG_VER="6.4"
 PKG_URL="https://github.com/mirror/ncurses.git"
-BUILD_DEPENDS=""
+BUILD_DEPENDS="glibc-libbundle"
 
 FLAG_GIT=1
 FLAG_LIB=1

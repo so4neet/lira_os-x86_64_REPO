@@ -1,0 +1,21 @@
+PKG_NAME="libidn2-libbundle"
+PKG_VER="2.3.8"
+PKG_URL="https://ftpmirror.gnu.org/gnu/libidn/libidn2-${PKG_VER}.tar.gz"
+BUILD_DEPENDS="glibc-libbundle"
+
+FLAG_PREPACKAGED=1
+FLAG_LIB=1
+
+update() {
+    latest_tag=$(curl -s https://ftp.gnu.org/gnu/libidn/ | grep -oP 'libidn2-\K[0-9]+\.[0-9]+\.[0-9]+' | sort -V | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+        FLAG_OOD=1
+        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    ./configure --prefix=/usr --libdir=/usr/lib
+    make -j$(nproc)
+    make DESTDIR="$PKG_DEST_DIR" install
+}

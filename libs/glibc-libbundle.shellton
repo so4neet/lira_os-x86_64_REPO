@@ -1,0 +1,46 @@
+PKG_NAME="glibc"
+PKG_PRETTY="glibc"
+PKG_DESC="GNU C Library"
+PKG_VER="2.44"
+PKG_URL="https://ftp.gnu.org/gnu/libc/glibc-${PKG_VER}.tar.gz"
+
+BUILD_DEPENDS="linux-headers-libbundle"
+
+FLAG_PREPACKAGED=1
+FLAG_LIB=1
+
+update() {
+    latest_tag=$(curl -s "https://ftp.gnu.org/gnu/libc/" | grep -oP 'glibc-[0-9]+\.[0-9]+(\.[0-9]+)?\.tar\.xz' | sed 's/glibc-//;s/\.tar\.xz//' | sort -V | tail -n 1)
+    echo "Latest tagged release: $latest_tag"
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+
+    _build_flags=(
+	--prefix=/usr
+	--libdir=/usr/lib
+	--libexecdir=/usr/lib
+	--enable-kernel=5.4
+	--enable-stack-protector=strong
+	--enable-stack-guard-page
+	--disable-profile
+	--disable-werror
+	--enable-shared
+	--with-headers="${SYSLIB_PATH}/include"
+    )
+
+    # Create build folder
+    mkdir -p build
+    cd build
+    ../configure "${_build_flags[@]}"
+
+    # Build
+    make -j$(nproc)
+
+    # Move to dest
+    make install DESTDIR="$PKG_DEST_DIR"
+}
