@@ -1,0 +1,28 @@
+PKG_NAME="attr-libbundle"
+PKG_VER="2.6.0"
+PKG_URL="https://git.savannah.nongnu.org/git/attr.git"
+BUILD_DEPENDS="glibc-libbundle"
+
+FLAG_GIT=1
+FLAG_LIB=1
+
+# Functions
+
+update() {
+    latest_tag=$(git ls-remote --tags --refs "https://git.savannah.nongnu.org/git/attr.git" | awk -F/ '{print $NF}' | sed 's/^v//' | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
+    export CFLAGS="-I${SYSLIB_PATH}/include"
+    export LDFLAGS="-I${SYSLIB_PATH}/lib"
+    
+    ./autogen.sh
+    ./configure --prefix=/usr --libdir=/usr/lib --disable-static
+    make -j$(nproc)
+    make install DESTDIR="${PKG_DEST_DIR}"
+}
