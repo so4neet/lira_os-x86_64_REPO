@@ -38,6 +38,6 @@ build() {
        sed -i 's/^all-am:.*/all-am:/' man/Makefile
     fi
     
-    make -j$(nproc)
+    make -j$1
     make install DESTDIR="$PKG_DEST_DIR"
 }
