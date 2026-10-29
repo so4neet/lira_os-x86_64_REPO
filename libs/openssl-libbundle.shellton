@@ -1,7 +1,7 @@
 PKG_NAME="openssl-libbundle"
 PKG_VER="4.0.3"
 PKG_URL="https://github.com/openssl/openssl.git"
-BUILD_DEPENDS="perl"
+BUILD_DEPENDS="glibc-libbundle"
 
 FLAG_GIT=1
 FLAG_LIB=1
@@ -21,7 +21,7 @@ build() {
     export CFLAGS="-I${SYSLIB_PATH}/include"
     export LDFLAGS="-L${SYSLIB_PATH}/lib"
     
-    ./Configure --prefix=/usr --libdir=/usr/lib
+    ./Configure --prefix=/usr --libdir=/lib --openssldir=/etc/ssl shared zlib-dynamic
     make -j$(nproc)
-    make install DESTDIR="$PKG_DEST_DIR"
+    make install_sw DESTDIR="$PKG_DEST_DIR"
 }

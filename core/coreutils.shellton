@@ -3,7 +3,7 @@ PKG_PRETTY="Coreutils"
 PKG_DESC="Basic file, shell and text manipulation utilities of the GNU operating system"
 PKG_VER="9.12"
 PKG_URL="https://ftp.gnu.org/gnu/coreutils/coreutils-${PKG_VER}.tar.gz"
-BUILD_DEPENDS="glibc-libbundle acl-libbundle attr-libbundle ncurses-libbundle gmp-libbundle"
+BUILD_DEPENDS="glibc-libbundle acl-libbundle attr-libbundle ncurses-libbundle gmp-libbundle readline-libbundle openssl-libbundle"
 
 FLAG_PREPACKAGED=1
 FLAG_SYSPACKAGE=1
