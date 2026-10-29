@@ -5,7 +5,7 @@ PKG_VER="7.2.11"
 KERNEL_SUBSTRING="${PKG_VER%%.*}.x"
 PKG_URL="https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/linux-${PKG_VER}.tar.xz"
 
-BUILD_DEPENDS="bc binutils cpio gettext glibc libgcc openssl pahole perl python rust rust-bindgen rust-src tar xxhash xz zlib zstd"
+BUILD_DEPENDS="linux-headers-libbundle"
 
 FLAG_PREPACKAGED=1
 FLAG_COREPACKAGE=1
