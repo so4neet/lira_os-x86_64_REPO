@@ -4,7 +4,7 @@ PKG_DESC="GNU C Library"
 PKG_VER="2.44"
 PKG_URL="https://ftp.gnu.org/gnu/libc/glibc-${PKG_VER}.tar.gz"
 
-BUILD_DEPENDS="gd git python lib32-gcc-libs"
+BUILD_DEPENDS="linux-headers-libbundle"
 
 FLAG_PREPACKAGED=1
 FLAG_COREPACKAGE=1
