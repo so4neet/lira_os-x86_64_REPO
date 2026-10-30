@@ -19,5 +19,6 @@ update() {
 
 build() {    
     tar -czf "$PKG_NAME".syspackage etc usr
+    cp "$PKG_NAME.syspackage" "$PKG_DEST_DIR"
     echo "LiraOS!" | cowsay
 }
