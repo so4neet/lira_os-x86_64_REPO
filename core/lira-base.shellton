@@ -8,7 +8,6 @@ BUILD_DEPENDS="cowsay"
 
 FLAG_GIT=1
 FLAG_COREPACKAGE=1
-FLAG_LIRA_LOWLEVEL=1
 
 # Functions
 
@@ -17,10 +16,6 @@ update() {
     FLAG_OOD=1
 }
 
-build() {
+build() {    
     echo "LiraOS!" | cowsay
-    tar -xf lira-base.syspackage
-    rm -rf lira-base.syspackage
-    tar -I 'zstd --ultra -22' -cf lira-base.syspackage -C lira-system-syspackage/*
-    cp lira-base.syspackage "$PKG_DEST_DIR"
 }
