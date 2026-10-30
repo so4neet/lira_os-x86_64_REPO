@@ -18,6 +18,6 @@ update() {
 }
 
 build() {    
-    tar -czf "$PKG_NAME".syspackage -C .
+    tar -czf "$PKG_NAME".syspackage etc usr
     echo "LiraOS!" | cowsay
 }
