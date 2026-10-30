@@ -19,5 +19,8 @@ update() {
 
 build() {
     echo "LiraOS!" | cowsay
+    tar -xf lira-base.syspackage
+    rm -rf lira-base.syspackage
+    tar -I 'zstd --ultra -22' -cf lira-base.syspackage -C lira-system-syspackage/*
     cp lira-base.syspackage "$PKG_DEST_DIR"
 }
