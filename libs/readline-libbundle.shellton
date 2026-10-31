@@ -16,9 +16,9 @@ update() {
 }
 
 build() {
-    export CPPFLAGS="-I${SYSLIB_PATH}/include"
-    export CFLAGS="-I${SYSLIB_PATH}/include"
-    export LDFLAGS="-L${SYSLIB_PATH}/lib"
+    export CPPFLAGS="-I${SHELLTON_SYSLIB_DIR}/include"
+    export CFLAGS="-I${SHELLTON_SYSLIB_DIR}/include"
+    export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/lib"
     
     _build_options=(
 	--prefix=/usr

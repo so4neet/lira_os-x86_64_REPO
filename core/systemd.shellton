@@ -20,9 +20,9 @@ update() {
 }
 
 build() {
-    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig:${SYSLIB_PATH}/usr/share/pkgconfig"
-    export CPPFLAGS="-I${SYSLIB_PATH}/usr/include"
-    export LDFLAGS="-L${SYSLIB_PATH}/usr/lib"
+    export PKG_CONFIG_PATH="${SHELLTON_SYSLIB_DIR}/usr/lib/pkgconfig:${SHELLTON_SYSLIB_DIR}/usr/share/pkgconfig"
+    export CPPFLAGS="-I${SHELLTON_SYSLIB_DIR}/usr/include"
+    export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/usr/lib"
 
     local _timeservers=(time.cloudflare.com)
     local _nameservers=(
@@ -75,10 +75,10 @@ build() {
         continue;
       fi
       for lib in $(readelf -d "$bin" 2>/dev/null | grep NEEDED | awk -F'[][]' '{print $2}'); do
-        if [ -f "${SYSLIB_PATH}/usr/lib/$lib" ]; then
-	  cp -n "${SYSLIB_PATH}/usr/lib/$lib" "$PKG_DEST_DIR/usr/lib/"
-	elif [ -f "${SYSLIB_PATH}/lib/$lib" ]; then
-	  cp -n "${SYSLIB_PATH}/lib/$lib" "$PKG_DEST_DIR/lib/"
+        if [ -f "${SHELLTON_SYSLIB_DIR}/usr/lib/$lib" ]; then
+	  cp -n "${SHELLTON_SYSLIB_DIR}/usr/lib/$lib" "$PKG_DEST_DIR/usr/lib/"
+	elif [ -f "${SHELLTON_SYSLIB_DIR}/lib/$lib" ]; then
+	  cp -n "${SHELLTON_SYSLIB_DIR}/lib/$lib" "$PKG_DEST_DIR/lib/"
 	fi
       done
       patchelf --set-rpath '$ORIGIN/../lib' "$bin" 2>/dev/null || true

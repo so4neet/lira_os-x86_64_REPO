@@ -17,9 +17,9 @@ update() {
 }
 
 build() {
-    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
-    export CFLAGS="-I${SYSLIB_PATH}/include"
-    export LDFLAGS="-L${SYSLIB_PATH}/lib"
+    export PKG_CONFIG_PATH="${SHELLTON_SYSLIB_DIR}/usr/lib/pkgconfig"
+    export CFLAGS="-I${SHELLTON_SYSLIB_DIR}/include"
+    export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/lib"
     
     ./Configure --prefix=/usr --libdir=/lib --openssldir=/etc/ssl shared zlib-dynamic
     make -j$(nproc)

@@ -20,9 +20,9 @@ update() {
 }
 
 build() {
-    export PKG_CONFIG_PATH="${SYSLIB_PATH}/usr/lib/pkgconfig"
-    export CFLAGS="-I${SYSLIB_PATH}/include -Wno-implicit-function-declaration -Wno-int-conversion"
-    export LDFLAGS="-L${SYSLIB_PATH}/lib"
+    export PKG_CONFIG_PATH="${SHELLTON_SYSLIB_DIR}/usr/lib/pkgconfig"
+    export CFLAGS="-I${SHELLTON_SYSLIB_DIR}/include -Wno-implicit-function-declaration -Wno-int-conversion"
+    export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/lib"
 
     _build_flags=(
 	--prefix="/opt/syspackages/${PKG_NAME}-${PKG_VER}"
