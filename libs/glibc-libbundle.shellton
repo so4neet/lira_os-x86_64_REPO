@@ -31,7 +31,7 @@ build() {
 	--disable-profile
 	--disable-werror
 	--enable-shared
-	--with-headers="${SYSLIB_PATH}/include"
+	--with-headers="${SHELLTON_SYSLIB_DIR}/include"
     )
 
     # Create build folder
