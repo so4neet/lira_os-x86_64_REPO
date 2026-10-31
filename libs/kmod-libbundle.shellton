@@ -1,5 +1,5 @@
 PKG_NAME="kmod-libbundle"
-PKG_VER="34.2"
+PKG_VER="34.3"
 PKG_URL="https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-${PKG_VER}.tar.xz"
 BUILD_DEPENDS="glibc-libbundle"
 

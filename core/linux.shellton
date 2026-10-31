@@ -1,7 +1,7 @@
 PKG_NAME="linux"
 PKG_PRETTY="Linux"
 PKG_DESC="Linux Kernel"
-PKG_VER="7.2.11"
+PKG_VER="7.3.1"
 KERNEL_SUBSTRING="${PKG_VER%%.*}.x"
 PKG_URL="https://cdn.kernel.org/pub/linux/kernel/v${KERNEL_SUBSTRING}/linux-${PKG_VER}.tar.xz"
 
