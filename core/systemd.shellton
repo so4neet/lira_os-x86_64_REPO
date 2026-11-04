@@ -25,7 +25,7 @@ build() {
     export PKG_CONFIG_PATH="${SHELLTON_SYSLIB_DIR}/lib/pkgconfig:${SHELLTON_SYSLIB_DIR}/share/pkgconfig"
     export CFLAGS="--sysroot=${SHELLTON_SYSLIB_DIR} -I${SHELLTON_SYSLIB_DIR}/include -I$gcc_inc"
     export CPPFLAGS="--sysroot=${SHELLTON_SYSLIB_DIR} -I${SHELLTON_SYSLIB_DIR}/include -I$gcc_inc"
-    export LDFLAGS="--sysroot=${SHELLTON_SYSLIB_DIR} -L${SHELLTON_SYSLIB_DIR}/lib -L${SHELLTON_SYSLIB_DIR}/lib64"
+    export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/lib -L${SHELLTON_SYSLIB_DIR}/lib64"
 
     branch_ver=$(echo "$PKG_VER" | cut -d '.' -f1)
 
