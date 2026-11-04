@@ -20,10 +20,12 @@ update() {
 }
 
 build() {
+    local gcc_inc
+    gcc_inc="$(cc -print-file-name=include)"
     export PKG_CONFIG_PATH="${SHELLTON_SYSLIB_DIR}/lib/pkgconfig:${SHELLTON_SYSLIB_DIR}/share/pkgconfig"
-    export CFLAGS="-I${SHELLTON_SYSLIB_DIR}/include"
-    export CPPFLAGS="-I${SHELLTON_SYSLIB_DIR}/include"
-    export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/lib -L${SHELLTON_SYSLIB_DIR}/lib64"
+    export CFLAGS="-nostdinc -I${SHELLTON_SYSLIB_DIR}/include -I$gcc_inc"
+    export CPPFLAGS="-nostdinc -I${SHELLTON_SYSLIB_DIR}/include -I$gcc_inc"
+    export LDFLAGS="-nostdlib -L${SHELLTON_SYSLIB_DIR}/lib -L${SHELLTON_SYSLIB_DIR}/lib64 -lc"
 
     branch_ver=$(echo "$PKG_VER" | cut -d '.' -f1)
 
