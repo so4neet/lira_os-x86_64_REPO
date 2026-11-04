@@ -18,6 +18,7 @@ update() {
 }
 
 build() {
+    git checkout $PKG_VER
     _build_options=(
 	--disable-doc
     )

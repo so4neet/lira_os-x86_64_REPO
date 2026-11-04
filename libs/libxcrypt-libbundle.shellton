@@ -1,0 +1,23 @@
+PKG_NAME="libxcrypt-libbundle"
+PKG_VER="v4.5.2"
+PKG_URL="https://github.com/besser82/libxcrypt.git"
+BUILD_DEPENDS="glibc-libbundle"
+
+FLAG_GIT=1
+FLAG_LIB=1
+
+update() {
+    latest_tag=$(git ls-remote --tags --refs "https://github.com/besser82/libxcrypt.git" | awk -F/ '{print $NF}' | sort -V | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+       FLAG_OOD=1
+       sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    git checkout $PKG_VER
+    ./autogen.sh
+    ./configure --prefix=/usr
+    make -j$(nproc)
+    make DESTDIR="$PKG_DEST_DIR" install
+}
