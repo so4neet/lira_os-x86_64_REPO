@@ -30,7 +30,6 @@ build() {
     branch_ver=$(echo "$PKG_VER" | cut -d '.' -f1)
 
     git checkout ${branch_ver}-stable
-    meson setup --wipe
 
     local _timeservers=(time.cloudflare.com)
     local _nameservers=(
@@ -74,7 +73,7 @@ build() {
     )
 
     # Compile systemd
-    meson setup build "${_meson_options[@]}"
+    meson setup --wipe build "${_meson_options[@]}"
     meson compile -C build
     DESTDIR="$PKG_DEST_DIR" meson install -C build
 }
