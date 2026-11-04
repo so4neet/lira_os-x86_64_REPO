@@ -62,6 +62,7 @@ build() {
         -Dsbat-distro-summary='Lira OS'
         -Dsbat-distro-version="${PKG_VER}"
         -Dsbat-distro-pkgname="${PKG_NAME}"
+	-Dwerror=false
     )
 
     # Compile systemd
