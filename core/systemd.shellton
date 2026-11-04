@@ -20,11 +20,10 @@ update() {
 }
 
 build() {
-    local gcc_inc
-    gcc_inc="$(cc -print-file-name=include)"
-    export PKG_CONFIG_PATH="${SHELLTON_SYSLIB_DIR}/lib/pkgconfig:${SHELLTON_SYSLIB_DIR}/share/pkgconfig"
-    export CFLAGS="--sysroot=${SHELLTON_SYSLIB_DIR} -I${SHELLTON_SYSLIB_DIR}/include -I$gcc_inc"
-    export CPPFLAGS="--sysroot=${SHELLTON_SYSLIB_DIR} -I${SHELLTON_SYSLIB_DIR}/include -I$gcc_inc"
+
+    export PKG_CONFIG_LIBDIR="${SHELLTON_SYSLIB_DIR}/lib/pkgconfig:${SHELLTON_SYSLIB_DIR}/share/pkgconfig"
+    export CFLAGS="-isystem ${SHELLTON_SYSLIB_DIR}/include"
+    export CPPFLAGS="-isystem ${SHELLTON_SYSLIB_DIR}/include"
     export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/lib -L${SHELLTON_SYSLIB_DIR}/lib64"
 
     branch_ver=$(echo "$PKG_VER" | cut -d '.' -f1)
