@@ -1,0 +1,29 @@
+PKG_NAME="xz-libbundle"
+PKG_VER="v5.8.4"
+PKG_URL="https://git.tukaani.org/xz.git"
+
+BUILD_DEPENDS="glibc-libbundle"
+
+FLAG_GIT=1
+FLAG_LIB=1
+
+# Functions
+
+update() {
+    latest_tag=$(git ls-remote --tags --refs "https://git.tukaani.org/xz.git" | awk -F/ '{print $NF}' | grep -E -v '(beta|alpha)' | sort -V | tail -n 1)
+    if [ -n "$latest_tag" ] && [ "$latest_tag" != "$PKG_VER" ]; then
+        FLAG_OOD=1
+        sed -i "s/^PKG_VER=.*/PKG_VER=\"$latest_tag\"/" "$ST_PATH"
+    fi
+}
+
+build() {
+    _build_options=(
+	--disable-doc
+    )
+
+    ./autogen.sh
+    ./configure "${_build_options[@]}"
+    make -j$(nproc)
+    make install DESTDIR="$PKG_DEST_DIR"
+}

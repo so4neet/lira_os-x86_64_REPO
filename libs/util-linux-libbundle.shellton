@@ -27,6 +27,8 @@ build() {
 	--enable-libmount
 	--enable-libblkid
 	--enable-libuuid
+	--enable-libfdisk
+	--enable-libsmartcols
 	--disable-wall
 	--disable-su
 	--disable-sulogin
