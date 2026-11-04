@@ -4,7 +4,7 @@ PKG_DESC="Core Init System and Libraries"
 PKG_VER="v262.1"
 PKG_URL="https://github.com/systemd/systemd.git"
 
-BUILD_DEPENDS="glibc-libbundle linux-headers-libbundle libcap-libbundle util-linux-libbundle kmod-libbundle libelf-libbundle libbpf-libbundle libgcrypt-libbundle pcre2-libbundle libidn2-libbundle lz4-libbundle zstd-libbundle"
+BUILD_DEPENDS="glibc-libbundle linux-headers-libbundle libcap-libbundle util-linux-libbundle kmod-libbundle libelf-libbundle libbpf-libbundle libgcrypt-libbundle pcre2-libbundle libidn2-libbundle lz4-libbundle zstd-libbundle zlib-libbundle"
 
 FLAG_GIT=1
 FLAG_COREPACKAGE=1
