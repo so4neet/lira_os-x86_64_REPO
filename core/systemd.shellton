@@ -25,6 +25,10 @@ build() {
     export CPPFLAGS="-I${SHELLTON_SYSLIB_DIR}/include"
     export LDFLAGS="-L${SHELLTON_SYSLIB_DIR}/lib -L${SHELLTON_SYSLIB_DIR}/lib64"
 
+    branch_ver=$(echo "$PKG_VER" | cut -d '.' -f1)
+
+    git checkout ${branch_ver}-stable
+
     local _timeservers=(time.cloudflare.com)
     local _nameservers=(
       '9.9.9.9#dns.quad9.net'
