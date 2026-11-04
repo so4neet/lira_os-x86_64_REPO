@@ -30,6 +30,7 @@ build() {
     branch_ver=$(echo "$PKG_VER" | cut -d '.' -f1)
 
     git checkout ${branch_ver}-stable
+    meson setup --wipe
 
     local _timeservers=(time.cloudflare.com)
     local _nameservers=(
